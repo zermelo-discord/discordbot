@@ -51,6 +51,22 @@ cmake-build-debug/
 # IntelliJ
 /out/
 
+# Eclipse
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
+.externalToolBuilders/
+*.launch
+
+
 **/target/
 pom.xml.tag
 pom.xml.releaseBackup
