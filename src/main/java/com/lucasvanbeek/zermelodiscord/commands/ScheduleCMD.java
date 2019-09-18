@@ -14,6 +14,7 @@ import com.lucasvanbeek.zermelodiscord.utils.data.LinkedUser;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.ChannelType;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import nl.mrwouter.zermelo4j.ZermeloAPI;
 import nl.mrwouter.zermelo4j.annoucements.Announcement;
@@ -32,15 +33,35 @@ public class ScheduleCMD implements BotCommand {
 					.queue();
 			return;
 		}
+
 		Calendar startCal = Calendar.getInstance();
 		startCal.set(Calendar.HOUR_OF_DAY, 0);
 		startCal.set(Calendar.MINUTE, 0);
-		if (args.length >= 1 && args[0].equalsIgnoreCase("morgen")) {
-			startCal.add(Calendar.DAY_OF_YEAR, 1);
-		}else if (args.length >= 1 && args[0].equalsIgnoreCase("overmorgen")) {
-			startCal.add(Calendar.DAY_OF_YEAR, 2);
-		}else if (args.length >= 1 && args[0].equalsIgnoreCase("gister")) {
-			startCal.add(Calendar.DAY_OF_YEAR, -1);
+
+		boolean hasMention = false;
+		Member mentionedUser = null;
+		if (args.length >= 1) {
+			int argIncrement = 0;
+			if (msg.getMentionedMembers().size() == 1) {
+				mentionedUser = msg.getMentionedMembers().get(0);
+				if (!LinkData.getInstance().isLinked(mentionedUser.getIdLong())) {
+					msg.getChannel()
+							.sendMessage(
+									EmbedHelper.getInstance().createError("De gebruiker heeft zijn of haar Zermelo niet gekoppeld!"))
+							.queue();
+					return;
+				}
+				hasMention = true;
+				if (args.length > 2)
+					argIncrement = 1;
+			}
+			if (args[argIncrement].equalsIgnoreCase("morgen")) {
+				startCal.add(Calendar.DAY_OF_YEAR, 1);
+			} else if (args[argIncrement].equalsIgnoreCase("overmorgen")) {
+				startCal.add(Calendar.DAY_OF_YEAR, 2);
+			} else if (args[argIncrement].equalsIgnoreCase("gister")) {
+				startCal.add(Calendar.DAY_OF_YEAR, -1);
+			}
 		}
 		
 
@@ -48,22 +69,33 @@ public class ScheduleCMD implements BotCommand {
 		endCal.set(Calendar.HOUR_OF_DAY, 23);
 		startCal.set(Calendar.MINUTE, 59);
 
-		LinkedUser user = LinkData.getInstance().getUser(msg.getAuthor().getIdLong());
-		ZermeloAPI api = ZermeloAPI.getAPI(user.getSchool(), user.getAccessToken());
-
-		List<Appointment> appointments = new ArrayList<>();
-		String announcements = "";
-		for (Appointment app : api.getAppointments(startCal.getTime(), endCal.getTime())) {
-			appointments.add(app);
+		LinkedUser user;
+		ZermeloAPI api;
+		if (!hasMention) {
+			user = LinkData.getInstance().getUser(msg.getAuthor().getIdLong());
+			api = ZermeloAPI.getAPI(user.getSchool(), user.getAccessToken());
+		} else {
+			user = LinkData.getInstance().getUser(mentionedUser.getIdLong());
+			api = ZermeloAPI.getAPI(user.getSchool(), user.getAccessToken());
 		}
+
+		StringBuilder announcements = new StringBuilder();
+		List<Appointment> appointments = new ArrayList<>(api.getAppointments(startCal.getTime(), endCal.getTime()));
 		for (Announcement ann : api.getAnnouncements()) {
-			announcements = announcements + "-" + ann.getText() + "\n";
+			announcements.append("-").append(ann.getText()).append("\n");
 		}
 
-		EmbedBuilder scheduleEmbed = EmbedHelper.getInstance()
-				.createScheduleMessage(msg.getAuthor().getName() + "#" + msg.getAuthor().getDiscriminator());
-		if (!announcements.isEmpty()) {
-			scheduleEmbed.addField("Aankondigingen", announcements, false);
+		EmbedBuilder scheduleEmbed = null;
+		if (!hasMention) {
+			scheduleEmbed = EmbedHelper.getInstance()
+					.createScheduleMessage(msg.getAuthor().getName() + "#" + msg.getAuthor().getDiscriminator());
+		} else {
+			scheduleEmbed = EmbedHelper.getInstance()
+					.createScheduleMessage(mentionedUser.getUser().getName() + "#" + mentionedUser.getUser().getDiscriminator());
+		}
+
+		if (announcements.length() > 0) {
+			scheduleEmbed.addField("Aankondigingen", announcements.toString(), false);
 		}
 
 		if (appointments.isEmpty()) {
@@ -78,8 +110,8 @@ public class ScheduleCMD implements BotCommand {
 
 				String changed = app.isModified() ? "\nAanpassing: " + app.getChangeDescription() : "";
 
-				String location = app.getLocations().isEmpty() ? "" : "\nDocent: " + String.join(", ", app.getLocations());
-				String teacher = app.getTeachers().isEmpty() ? "" : "\nLokaal: " + String.join(", ", app.getTeachers());
+				String location = app.getLocations().isEmpty() ? "" : "\nDocent: " + String.join(", ", app.getTeachers());
+				String teacher = app.getTeachers().isEmpty() ? "" : "\nLokaal: " + String.join(", ", app.getLocations());
 
 				scheduleEmbed.addField(
 						cancelStriped + "Lesuur " + startTime + " (" + String.join(", ", app.getSubjects()) + ")" + cancelStriped,
