@@ -45,10 +45,8 @@ public class ScheduleCMD implements BotCommand {
 			if (msg.getMentionedMembers().size() == 1) {
 				mentionedUser = msg.getMentionedMembers().get(0);
 				if (!LinkData.getInstance().isLinked(mentionedUser.getIdLong())) {
-					msg.getChannel()
-							.sendMessage(
-									EmbedHelper.getInstance().createError("De gebruiker heeft zijn of haar Zermelo niet gekoppeld!"))
-							.queue();
+					msg.getChannel().sendMessage(EmbedHelper.getInstance()
+							.createError("De gebruiker heeft zijn of haar Zermelo niet gekoppeld!")).queue();
 					return;
 				}
 				hasMention = true;
@@ -63,7 +61,6 @@ public class ScheduleCMD implements BotCommand {
 				startCal.add(Calendar.DAY_OF_YEAR, -1);
 			}
 		}
-		
 
 		Calendar endCal = (Calendar) startCal.clone();
 		endCal.set(Calendar.HOUR_OF_DAY, 23);
@@ -90,8 +87,8 @@ public class ScheduleCMD implements BotCommand {
 			scheduleEmbed = EmbedHelper.getInstance()
 					.createScheduleMessage(msg.getAuthor().getName() + "#" + msg.getAuthor().getDiscriminator());
 		} else {
-			scheduleEmbed = EmbedHelper.getInstance()
-					.createScheduleMessage(mentionedUser.getUser().getName() + "#" + mentionedUser.getUser().getDiscriminator());
+			scheduleEmbed = EmbedHelper.getInstance().createScheduleMessage(
+					mentionedUser.getUser().getName() + "#" + mentionedUser.getUser().getDiscriminator());
 		}
 
 		if (announcements.length() > 0) {
@@ -110,16 +107,16 @@ public class ScheduleCMD implements BotCommand {
 
 				String changed = app.isModified() ? "\nAanpassing: " + app.getChangeDescription() : "";
 
-				String location = app.getLocations().isEmpty() ? "" : "\nDocent: " + String.join(", ", app.getTeachers());
-				String teacher = app.getTeachers().isEmpty() ? "" : "\nLokaal: " + String.join(", ", app.getLocations());
+				String location = app.getLocations().isEmpty() ? ""
+						: "\nDocent: " + String.join(", ", app.getTeachers());
+				String teacher = app.getTeachers().isEmpty() ? ""
+						: "\nLokaal: " + String.join(", ", app.getLocations());
 
 				scheduleEmbed.addField(
-						cancelStriped + "Lesuur " + startTime + " (" + String.join(", ", app.getSubjects()) + ")" + cancelStriped,
-								location
-								+ teacher
-								+ "\nTijd: " + dateFormat.format(new Date(app.getStart() * 1000)) + " - " + dateFormat.format(new Date(app.getEnd() * 1000)) 
-								+ remark 
-								+ changed,
+						cancelStriped + "Lesuur " + startTime + " (" + String.join(", ", app.getSubjects()) + ")"
+								+ cancelStriped,
+						location + teacher + "\nTijd: " + dateFormat.format(new Date(app.getStart() * 1000)) + " - "
+								+ dateFormat.format(new Date(app.getEnd() * 1000)) + remark + changed,
 						false);
 			}
 		}

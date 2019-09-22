@@ -42,7 +42,7 @@ public class HikariSQL {
 		hikari.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
 		hikari.setPoolName("ZermeloBotPool");
 		hikari.setConnectionTestQuery("SELECT 1");
-		
+
 		buildTables();
 	}
 
@@ -52,7 +52,7 @@ public class HikariSQL {
 			statement.executeUpdate(
 					"CREATE TABLE IF NOT EXISTS Links(rowId INTEGER NOT NULL AUTO_INCREMENT, userId bigint(22), school varchar(32), accessToken varchar(32), PRIMARY KEY(rowId))");
 			statement.close();
-			
+
 			Statement createCancelTable = connection.createStatement();
 			createCancelTable.executeUpdate(
 					"CREATE TABLE IF NOT EXISTS cancelledLessons(rowId INTEGER NOT NULL AUTO_INCREMENT, userId bigint(22), lessonId bigint(22), lessonStartTime bigint(13), PRIMARY KEY(rowId))");

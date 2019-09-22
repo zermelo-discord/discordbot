@@ -14,8 +14,10 @@ public class UnlinkCMD implements BotCommand {
 	public void execute(Command cmd, String[] args, Message msg, ChannelType type) {
 		if (type != ChannelType.PRIVATE) {
 			msg.delete().queue();
-			msg.getChannel().sendMessage(EmbedHelper.getInstance()
-					.createError("Je moet dit commando uitvoeren in de priv\u00EBberichten van de bot!")).queue();
+			msg.getChannel()
+					.sendMessage(EmbedHelper.getInstance()
+							.createError("Je moet dit commando uitvoeren in de priv\u00EBberichten van de bot!"))
+					.queue();
 			return;
 		}
 		if (!LinkData.getInstance().isLinked(msg.getAuthor().getIdLong())) {

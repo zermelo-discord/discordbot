@@ -9,6 +9,7 @@ public class CommandListener extends ListenerAdapter {
 
 	@Override
 	public void onMessageReceived(MessageReceivedEvent event) {
-		CommandFactory.getInstance().execute(event.getMessage().getContentRaw(), event.getMessage(), event.getChannelType());
+		CommandFactory.getInstance().execute(event.getMessage().getContentRaw(), event.getMessage(),
+				event.getChannelType());
 	}
 }

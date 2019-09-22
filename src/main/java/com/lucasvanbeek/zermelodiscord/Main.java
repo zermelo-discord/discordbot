@@ -41,10 +41,11 @@ public class Main {
 			CommandFactory.getInstance().registerCommand("!schedule", new ScheduleCMD()).addAlias("!rooster");
 
 			try {
-				//Wait for JDA to succesfully load. When JDA has been loaded start the cancelledlessontask
+				// Wait for JDA to succesfully load. When JDA has been loaded start the
+				// cancelledlessontask
 				jda.awaitReady();
 			} catch (Exception ex) {
-				//ignored
+				// ignored
 			}
 			CancelledLessonTask task = new CancelledLessonTask(jda);
 			Timer timer = new Timer();

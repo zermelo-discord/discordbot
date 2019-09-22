@@ -24,15 +24,16 @@ public class CancelledData {
 	public void throwAwayOldCancellations() {
 		try (Connection connection = HikariSQL.getInstance().getConnection();) {
 
-			PreparedStatement statement = connection.prepareStatement("DELETE FROM `cancelledLessons` WHERE lessonStartTime < ?");
+			PreparedStatement statement = connection
+					.prepareStatement("DELETE FROM `cancelledLessons` WHERE lessonStartTime < ?");
 			statement.setLong(1, new Date().getTime());
-			statement.close();			
+			statement.close();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 		pullData();
 	}
-	
+
 	public void pullData() {
 		knownCancelledAppointments.clear();
 		try (Connection connection = HikariSQL.getInstance().getConnection();) {
@@ -43,8 +44,10 @@ public class CancelledData {
 			while (result.next()) {
 				long userId = result.getLong("userId");
 				long cancelledLessonId = result.getLong("lessonId");
-				
-				List<Long> cancelledIds = knownCancelledAppointments.containsKey(userId) ? knownCancelledAppointments.get(userId) : new ArrayList<Long>();
+
+				List<Long> cancelledIds = knownCancelledAppointments.containsKey(userId)
+						? knownCancelledAppointments.get(userId)
+						: new ArrayList<Long>();
 				cancelledIds.add(cancelledLessonId);
 				knownCancelledAppointments.remove(userId);
 				knownCancelledAppointments.put(userId, cancelledIds);
@@ -56,18 +59,21 @@ public class CancelledData {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	public void addKnownCancel(long userId, long lessonId, long appStartTime) {
 		try (Connection connection = HikariSQL.getInstance().getConnection();) {
-			PreparedStatement statement = connection.prepareStatement("INSERT INTO `cancelledLessons` (userId, lessonId, lessonStartTime) VALUES (?, ?, ?)");
+			PreparedStatement statement = connection.prepareStatement(
+					"INSERT INTO `cancelledLessons` (userId, lessonId, lessonStartTime) VALUES (?, ?, ?)");
 			statement.setLong(1, userId);
 			statement.setLong(2, lessonId);
 			statement.setLong(3, appStartTime);
-			
+
 			statement.execute();
-			statement.close();			
-			
-			List<Long> cancelledIds = knownCancelledAppointments.containsKey(userId) ? knownCancelledAppointments.get(userId) : new ArrayList<Long>();
+			statement.close();
+
+			List<Long> cancelledIds = knownCancelledAppointments.containsKey(userId)
+					? knownCancelledAppointments.get(userId)
+					: new ArrayList<Long>();
 			cancelledIds.add(lessonId);
 			knownCancelledAppointments.remove(userId);
 			knownCancelledAppointments.put(userId, cancelledIds);
@@ -75,8 +81,9 @@ public class CancelledData {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	public List<Long> getKnownCancelledLessonIDs(long userId) {
-	    return knownCancelledAppointments.containsKey(userId) ? knownCancelledAppointments.get(userId) : new ArrayList<Long>();
+		return knownCancelledAppointments.containsKey(userId) ? knownCancelledAppointments.get(userId)
+				: new ArrayList<Long>();
 	}
 }

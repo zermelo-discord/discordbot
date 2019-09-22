@@ -35,7 +35,7 @@ public class CancelledLessonTask extends TimerTask {
 		long startMs = System.currentTimeMillis();
 		System.out.println("Start running CancelledLessonTask task.");
 		CancelledData.getInstance().throwAwayOldCancellations();
-		
+
 		int cancellations = 0;
 		for (LinkedUser user : LinkData.getInstance().getLinkedUsers()) {
 			List<Long> knownCancelledLessons = CancelledData.getInstance().getKnownCancelledLessonIDs(user.getUserId());
@@ -68,19 +68,19 @@ public class CancelledLessonTask extends TimerTask {
 							? timeFormat.format(new Date(app.getStart() * 1000))
 							: "" + app.getStartTimeSlot());
 
-					String teachers = app.getTeachers().isEmpty() ? "" : "\nDocent: " + String.join(", ", app.getTeachers());
- 					
+					String teachers = app.getTeachers().isEmpty() ? ""
+							: "\nDocent: " + String.join(", ", app.getTeachers());
+
 					cancelledLessonEmbed.addField(
-							"Lesuur " + startTime + " op " + dateFormat.format(app.getStart()  * 1000) + " valt uit!",
-							"Vak: " + String.join(", ", app.getSubjects()) 
-							+ teachers,
-							false);
+							"Lesuur " + startTime + " op " + dateFormat.format(app.getStart() * 1000) + " valt uit!",
+							"Vak: " + String.join(", ", app.getSubjects()) + teachers, false);
 				}
 				discordUser.openPrivateChannel().queue((channel) -> {
 					channel.sendMessage(cancelledLessonEmbed.build()).queue();
 				}, new DirectMessageConsumer<Throwable>(discordUser, null));
 			}
 		}
-		System.out.println("Succesfully ran CancelledLessonTask task. Found " + cancellations + " cancellations. (Took " + (System.currentTimeMillis() - startMs) + "ms)");
+		System.out.println("Succesfully ran CancelledLessonTask task. Found " + cancellations + " cancellations. (Took "
+				+ (System.currentTimeMillis() - startMs) + "ms)");
 	}
 }

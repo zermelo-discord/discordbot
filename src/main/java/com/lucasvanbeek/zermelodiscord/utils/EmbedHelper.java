@@ -28,32 +28,36 @@ public class EmbedHelper {
 	}
 
 	public MessageEmbed createError(String error) {
-		return new EmbedBuilder().setColor(Color.RED).setAuthor("ZermeloBot", "https://github.com/zermelo-discord/discordbot",
+		return new EmbedBuilder().setColor(Color.RED)
+				.setAuthor("ZermeloBot", "https://github.com/zermelo-discord/discordbot",
 						getJDA().getSelfUser().getAvatarUrl())
 				.addField("Foutmelding", error, true)
 				.setFooter("\u00A9 ZermeloBot - " + Calendar.getInstance().get(Calendar.YEAR),
 						getJDA().getSelfUser().getAvatarUrl())
 				.build();
 	}
-	
+
 	public MessageEmbed createInfo(String info) {
-		return new EmbedBuilder().setColor(Color.GREEN).setAuthor("ZermeloBot", "https://github.com/zermelo-discord/discordbot",
+		return new EmbedBuilder().setColor(Color.GREEN)
+				.setAuthor("ZermeloBot", "https://github.com/zermelo-discord/discordbot",
 						getJDA().getSelfUser().getAvatarUrl())
 				.addField("Informatie", info, true)
 				.setFooter("\u00A9 ZermeloBot - " + Calendar.getInstance().get(Calendar.YEAR),
 						getJDA().getSelfUser().getAvatarUrl())
 				.build();
 	}
-	
+
 	public EmbedBuilder createScheduleMessage(String user) {
-		return new EmbedBuilder().setColor(Color.GREEN).setAuthor("Rooster voor " + user, "https://github.com/zermelo-discord/discordbot",
+		return new EmbedBuilder().setColor(Color.GREEN)
+				.setAuthor("Rooster voor " + user, "https://github.com/zermelo-discord/discordbot",
 						getJDA().getSelfUser().getAvatarUrl())
 				.setFooter("\u00A9 ZermeloBot - " + Calendar.getInstance().get(Calendar.YEAR),
 						getJDA().getSelfUser().getAvatarUrl());
 	}
-	
+
 	public EmbedBuilder createCancelledAlert(String user) {
-		return new EmbedBuilder().setColor(Color.GREEN).setAuthor("Nieuwe lesuitval voor " + user, "https://github.com/zermelo-discord/discordbot",
+		return new EmbedBuilder().setColor(Color.GREEN)
+				.setAuthor("Nieuwe lesuitval voor " + user, "https://github.com/zermelo-discord/discordbot",
 						getJDA().getSelfUser().getAvatarUrl())
 				.setFooter("\u00A9 ZermeloBot - " + Calendar.getInstance().get(Calendar.YEAR),
 						getJDA().getSelfUser().getAvatarUrl());

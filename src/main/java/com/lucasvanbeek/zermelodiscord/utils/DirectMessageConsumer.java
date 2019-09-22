@@ -18,7 +18,7 @@ public class DirectMessageConsumer<T> implements Consumer<Throwable> {
 
 	@Override
 	public void accept(Throwable t) {
-		if (channel != null) {	
+		if (channel != null) {
 			channel.sendMessage(user.getAsMention() + ", je moet jouw priveberichten aanzetten!").queue();
 		}
 	}

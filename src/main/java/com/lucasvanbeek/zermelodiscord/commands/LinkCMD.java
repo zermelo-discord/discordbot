@@ -41,11 +41,10 @@ public class LinkCMD implements BotCommand {
 			}
 			try {
 				String accessToken = ZermeloAPI.getAccessToken(school, linkAppCode);
-				msg.getChannel()
-						.sendMessage(EmbedHelper.getInstance().createInfo("Succesvol jouw account gelinked!"))
+				msg.getChannel().sendMessage(EmbedHelper.getInstance().createInfo("Succesvol jouw account gelinked!"))
 						.queue();
 				LinkData.getInstance().link(msg.getAuthor().getIdLong(), school, accessToken);
-				
+
 			} catch (IOException ex) {
 				msg.getChannel().sendMessage(EmbedHelper.getInstance().createError("Ongeldige link-app code!")).queue();
 			}

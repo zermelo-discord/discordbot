@@ -48,14 +48,15 @@ public class LinkData {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	public void link(long userId, String school, String accessToken) {
 		try (Connection connection = HikariSQL.getInstance().getConnection();) {
-			PreparedStatement statement = connection.prepareStatement("INSERT INTO Links (`userId`, `school`, `accessToken`) VALUES (?, ?, ?)");
+			PreparedStatement statement = connection
+					.prepareStatement("INSERT INTO Links (`userId`, `school`, `accessToken`) VALUES (?, ?, ?)");
 			statement.setLong(1, userId);
 			statement.setString(2, school);
 			statement.setString(3, accessToken);
-			
+
 			statement.executeUpdate();
 			statement.close();
 			users.put(userId, new LinkedUser(userId, school, accessToken));
@@ -63,24 +64,24 @@ public class LinkData {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	public void unlink(long userId) {
 		users.remove(userId);
 		try (Connection connection = HikariSQL.getInstance().getConnection();) {
 			PreparedStatement statement = connection.prepareStatement("DELETE FROM Links WHERE `userId`=?");
 			statement.setLong(1, userId);
-			
+
 			statement.executeUpdate();
 			statement.close();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	public LinkedUser getUser(long userId) {
 		return users.get(userId);
 	}
-	
+
 	public Collection<LinkedUser> getLinkedUsers() {
 		if (users.isEmpty()) {
 			pullData();
