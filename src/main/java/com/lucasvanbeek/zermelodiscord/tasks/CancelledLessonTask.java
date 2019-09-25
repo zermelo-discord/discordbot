@@ -2,6 +2,7 @@ package com.lucasvanbeek.zermelodiscord.tasks;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -41,11 +42,10 @@ public class CancelledLessonTask extends TimerTask {
 			List<Long> knownCancelledLessons = CancelledData.getInstance().getKnownCancelledLessonIDs(user.getUserId());
 			List<Appointment> newCancelledLessons = new ArrayList<>();
 
-			Date endDate = new Date();
-			endDate.setTime(endDate.getTime() + (86400000 * 7));
+			Calendar calendar = Calendar.getInstance();
 
 			ZermeloAPI api = ZermeloAPI.getAPI(user.getSchool(), user.getAccessToken());
-			for (Appointment app : api.getAppointments(new Date(), endDate)) {
+			for (Appointment app : api.getAppointmentParticipations(calendar.get(Calendar.YEAR), calendar.get(Calendar.WEEK_OF_YEAR))) {
 				if (app.isCancelled() && !knownCancelledLessons.contains(app.getId())) {
 					newCancelledLessons.add(app);
 					CancelledData.getInstance().addKnownCancel(user.getUserId(), app.getId(), app.getStart() * 1000);
@@ -63,8 +63,7 @@ public class CancelledLessonTask extends TimerTask {
 						.createCancelledAlert(discordUser.getName() + "#" + discordUser.getDiscriminator());
 
 				for (Appointment app : newCancelledLessons) {
-
-					String startTime = (app.getStartTimeSlot() == -1
+					String startTime = (app.getStartTimeSlot() == null
 							? timeFormat.format(new Date(app.getStart() * 1000))
 							: "" + app.getStartTimeSlot());
 

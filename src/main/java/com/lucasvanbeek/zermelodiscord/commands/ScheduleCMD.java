@@ -1,10 +1,10 @@
 package com.lucasvanbeek.zermelodiscord.commands;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.lucasvanbeek.zermelodiscord.utils.EmbedHelper;
 import com.lucasvanbeek.zermelodiscord.utils.commands.BotCommand;
@@ -77,7 +77,10 @@ public class ScheduleCMD implements BotCommand {
 		}
 
 		StringBuilder announcements = new StringBuilder();
-		List<Appointment> appointments = new ArrayList<>(api.getAppointments(startCal.getTime(), endCal.getTime()));
+		List<Appointment> appointments = api
+				.getAppointmentParticipations(startCal.get(Calendar.YEAR), startCal.get(Calendar.WEEK_OF_YEAR)).stream()
+				.filter(app -> app.getStart() >= (startCal.getTimeInMillis() / 1000) && app.getEnd() <= (endCal.getTimeInMillis() / 1000))
+				.collect(Collectors.toList());
 		for (Announcement ann : api.getAnnouncements()) {
 			announcements.append("-").append(ann.getText()).append("\n");
 		}
@@ -99,8 +102,8 @@ public class ScheduleCMD implements BotCommand {
 			scheduleEmbed.addField("Lessen", "Geen! :tada:", false);
 		} else {
 			for (Appointment app : appointments) {
-				String startTime = (app.getStartTimeSlot() == -1 ? dateFormat.format(new Date(app.getStart() * 1000))
-						: "" + app.getStartTimeSlot());
+				String startTime = (app.getStartTimeSlot() == null ? dateFormat.format(new Date(app.getStart() * 1000))
+						: "" + app.getStartTimeSlot().replaceAll("[^\\d]", ""));
 				String remark = app.getRemark().isEmpty() ? "" : "\nOpmerking: " + app.getRemark().replace("\n", " ");
 
 				String cancelStriped = app.isCancelled() ? "~~" : "";
