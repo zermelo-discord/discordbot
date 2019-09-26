@@ -19,12 +19,12 @@ import net.dv8tion.jda.api.JDABuilder;
 
 public class Main {
 
-	private static String API_TOKEN = "NTkzNTI4Mzk1NTA2MjUzODMw.XYe7eg.KhricCpNU6dyvIn43jglTcDYv0Q";
-    private static String IP_ADDRESS = "server01.yvanwatchman.nl";
-    private static int PORT = 3306;
-    private static String DB_NAME = "mrwouter_zermelobot";
-    private static String USERNAME = "mrwouter_zermelobot";
-    private static String PASSWORD = "oTwj0Z13AP";
+	private static String API_TOKEN = "";
+	private static String IP_ADDRESS = "";
+	private static int PORT = 3306;
+	private static String DB_NAME = "";
+	private static String USERNAME = "";
+	private static String PASSWORD = "";
 
 	public static void main(String[] args) {
 		try {
