@@ -82,7 +82,11 @@ public class ScheduleCMD implements BotCommand {
 				.filter(app -> app.getStart() >= (startCal.getTimeInMillis() / 1000)
 						&& app.getEnd() <= (endCal.getTimeInMillis() / 1000))
 				.collect(Collectors.toList());
-		for (Announcement ann : api.getAnnouncements()) {
+
+		for (Announcement ann : api.getAnnouncements().stream()
+				.filter(ann -> ann.getStart() >= (startCal.getTimeInMillis() / 1000)
+						&& ann.getEnd() >= (startCal.getTimeInMillis() / 1000))
+				.collect(Collectors.toList())) {
 			announcements.append("- ").append(ann.getText()).append("\n");
 		}
 
