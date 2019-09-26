@@ -79,10 +79,11 @@ public class ScheduleCMD implements BotCommand {
 		StringBuilder announcements = new StringBuilder();
 		List<Appointment> appointments = api
 				.getAppointmentParticipations(startCal.get(Calendar.YEAR), startCal.get(Calendar.WEEK_OF_YEAR)).stream()
-				.filter(app -> app.getStart() >= (startCal.getTimeInMillis() / 1000) && app.getEnd() <= (endCal.getTimeInMillis() / 1000))
+				.filter(app -> app.getStart() >= (startCal.getTimeInMillis() / 1000)
+						&& app.getEnd() <= (endCal.getTimeInMillis() / 1000))
 				.collect(Collectors.toList());
 		for (Announcement ann : api.getAnnouncements()) {
-			announcements.append("-").append(ann.getText()).append("\n");
+			announcements.append("- ").append(ann.getText()).append("\n");
 		}
 
 		EmbedBuilder scheduleEmbed = null;
@@ -125,6 +126,5 @@ public class ScheduleCMD implements BotCommand {
 		}
 
 		msg.getChannel().sendMessage(scheduleEmbed.build()).queue();
-
 	}
 }

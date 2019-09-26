@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -23,10 +22,11 @@ public class CancelledData {
 
 	public void throwAwayOldCancellations() {
 		try (Connection connection = HikariSQL.getInstance().getConnection();) {
-
 			PreparedStatement statement = connection
 					.prepareStatement("DELETE FROM `cancelledLessons` WHERE lessonStartTime < ?");
-			statement.setLong(1, new Date().getTime());
+			//Current time - 1 week.
+			statement.setLong(1, System.currentTimeMillis() - 604800000);
+			statement.executeUpdate();
 			statement.close();
 		} catch (Exception ex) {
 			ex.printStackTrace();

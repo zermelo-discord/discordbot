@@ -45,7 +45,8 @@ public class CancelledLessonTask extends TimerTask {
 			Calendar calendar = Calendar.getInstance();
 
 			ZermeloAPI api = ZermeloAPI.getAPI(user.getSchool(), user.getAccessToken());
-			for (Appointment app : api.getAppointmentParticipations(calendar.get(Calendar.YEAR), calendar.get(Calendar.WEEK_OF_YEAR))) {
+			for (Appointment app : api.getAppointmentParticipations(calendar.get(Calendar.YEAR),
+					calendar.get(Calendar.WEEK_OF_YEAR))) {
 				if (app.isCancelled() && !knownCancelledLessons.contains(app.getId())) {
 					newCancelledLessons.add(app);
 					CancelledData.getInstance().addKnownCancel(user.getUserId(), app.getId(), app.getStart() * 1000);
