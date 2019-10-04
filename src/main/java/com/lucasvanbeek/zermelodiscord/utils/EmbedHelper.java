@@ -62,4 +62,12 @@ public class EmbedHelper {
 				.setFooter("\u00A9 ZermeloBot - " + Calendar.getInstance().get(Calendar.YEAR),
 						getJDA().getSelfUser().getAvatarUrl());
 	}
+	
+	public EmbedBuilder createAnnouncementAlert(String user) {
+		return new EmbedBuilder().setColor(Color.GREEN)
+				.setAuthor("Nieuwe aankondiging voor " + user, "https://github.com/zermelo-discord/discordbot",
+						getJDA().getSelfUser().getAvatarUrl())
+				.setFooter("\u00A9 ZermeloBot - " + Calendar.getInstance().get(Calendar.YEAR),
+						getJDA().getSelfUser().getAvatarUrl());
+	}
 }

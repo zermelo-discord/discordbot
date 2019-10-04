@@ -82,7 +82,7 @@ public class CancelledData {
 		}
 	}
 
-	public List<Long> getKnownCancelledLessonIDs(long userId) {
+	public List<Long> getKnownCancelledLessonIds(long userId) {
 		return knownCancelledAppointments.containsKey(userId) ? knownCancelledAppointments.get(userId)
 				: new ArrayList<Long>();
 	}
