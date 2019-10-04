@@ -53,10 +53,15 @@ public class HikariSQL {
 					"CREATE TABLE IF NOT EXISTS Links(rowId INTEGER NOT NULL AUTO_INCREMENT, userId bigint(22), school varchar(32), accessToken varchar(32), PRIMARY KEY(rowId))");
 			statement.close();
 
-			Statement createCancelTable = connection.createStatement();
-			createCancelTable.executeUpdate(
+			Statement createCancelledLessonsTable = connection.createStatement();
+			createCancelledLessonsTable.executeUpdate(
 					"CREATE TABLE IF NOT EXISTS cancelledLessons(rowId INTEGER NOT NULL AUTO_INCREMENT, userId bigint(22), lessonId bigint(22), lessonStartTime bigint(13), PRIMARY KEY(rowId))");
-			createCancelTable.close();
+			createCancelledLessonsTable.close();
+			
+			Statement createAnnouncementsTable = connection.createStatement();
+			createAnnouncementsTable.executeUpdate(
+					"CREATE TABLE IF NOT EXISTS Announcements(rowId INTEGER NOT NULL AUTO_INCREMENT, userId bigint(22), announcementId bigint(22), PRIMARY KEY(rowId))");
+			createAnnouncementsTable.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

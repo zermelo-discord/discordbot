@@ -3,7 +3,6 @@ package com.lucasvanbeek.zermelodiscord.tasks;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.TimerTask;
@@ -19,7 +18,6 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.User;
 import nl.mrwouter.zermelo4j.ZermeloAPI;
 import nl.mrwouter.zermelo4j.appointments.Appointment;
-import nl.mrwouter.zermelo4j.appointments.AppointmentComparator;
 
 public class CancelledLessonTask extends TimerTask {
 
@@ -39,7 +37,7 @@ public class CancelledLessonTask extends TimerTask {
 
 		int cancellations = 0;
 		for (LinkedUser user : LinkData.getInstance().getLinkedUsers()) {
-			List<Long> knownCancelledLessons = CancelledData.getInstance().getKnownCancelledLessonIDs(user.getUserId());
+			List<Long> knownCancelledLessons = CancelledData.getInstance().getKnownCancelledLessonIds(user.getUserId());
 			List<Appointment> newCancelledLessons = new ArrayList<>();
 
 			Calendar calendar = Calendar.getInstance();
@@ -58,7 +56,8 @@ public class CancelledLessonTask extends TimerTask {
 				if (discordUser == null) {
 					break;
 				}
-				Collections.sort(newCancelledLessons, new AppointmentComparator());
+				//Should be useless, getAppointmentParticipations sorts appointments by default
+				//Collections.sort(newCancelledLessons, new AppointmentComparator());
 
 				EmbedBuilder cancelledLessonEmbed = EmbedHelper.getInstance()
 						.createCancelledAlert(discordUser.getName() + "#" + discordUser.getDiscriminator());

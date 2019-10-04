@@ -9,6 +9,7 @@ import com.lucasvanbeek.zermelodiscord.commands.ScheduleCMD;
 import com.lucasvanbeek.zermelodiscord.commands.UnlinkCMD;
 import com.lucasvanbeek.zermelodiscord.listeners.CommandListener;
 import com.lucasvanbeek.zermelodiscord.listeners.ReadyListener;
+import com.lucasvanbeek.zermelodiscord.tasks.AnnouncementTask;
 import com.lucasvanbeek.zermelodiscord.tasks.CancelledLessonTask;
 import com.lucasvanbeek.zermelodiscord.utils.EmbedHelper;
 import com.lucasvanbeek.zermelodiscord.utils.commands.CommandFactory;
@@ -20,11 +21,11 @@ import net.dv8tion.jda.api.JDABuilder;
 public class Main {
 
 	private static String API_TOKEN = "";
-	private static String IP_ADDRESS = "";
-	private static int PORT = 3306;
-	private static String DB_NAME = "";
-	private static String USERNAME = "";
-	private static String PASSWORD = "";
+    private static String IP_ADDRESS = "";
+    private static int PORT = 3306;
+    private static String DB_NAME = "";
+    private static String USERNAME = "";
+    private static String PASSWORD = "";
 
 	public static void main(String[] args) {
 		try {
@@ -47,10 +48,10 @@ public class Main {
 			} catch (Exception ex) {
 				// ignored
 			}
-			CancelledLessonTask task = new CancelledLessonTask(jda);
 			Timer timer = new Timer();
 
-			timer.scheduleAtFixedRate(task, 1000L, 1000 * 60 * 10);
+			timer.scheduleAtFixedRate(new CancelledLessonTask(jda), 1000L, 1000 * 60 * 10);
+			timer.scheduleAtFixedRate(new AnnouncementTask(jda), 1000L, 1000 * 60 * 10);
 		} catch (LoginException exception) {
 			System.out.println("[ERROR] An internal error has occured whilst attempting to login.");
 			exception.printStackTrace();
