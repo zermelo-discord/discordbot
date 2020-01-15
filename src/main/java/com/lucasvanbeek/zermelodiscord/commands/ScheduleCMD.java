@@ -26,8 +26,6 @@ public class ScheduleCMD implements BotCommand {
 
 	@Override
 	public void execute(Command cmd, String[] args, Message msg, ChannelType type) {
-		System.out.println(msg.getContentRaw());
-		
 		if (!LinkData.getInstance().isLinked(msg.getAuthor().getIdLong())) {
 			msg.getChannel()
 					.sendMessage(
