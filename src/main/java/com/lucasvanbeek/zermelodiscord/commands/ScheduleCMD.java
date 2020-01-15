@@ -26,6 +26,8 @@ public class ScheduleCMD implements BotCommand {
 
 	@Override
 	public void execute(Command cmd, String[] args, Message msg, ChannelType type) {
+		System.out.println(msg.getContentRaw());
+		
 		if (!LinkData.getInstance().isLinked(msg.getAuthor().getIdLong())) {
 			msg.getChannel()
 					.sendMessage(
@@ -42,7 +44,7 @@ public class ScheduleCMD implements BotCommand {
 		Member mentionedUser = null;
 		if (args.length >= 1) {
 			int argIncrement = 0;
-			if (msg.getMentionedMembers().size() == 1) {
+			if (type != ChannelType.PRIVATE && msg.getMentionedMembers().size() == 1) {
 				mentionedUser = msg.getMentionedMembers().get(0);
 				if (!LinkData.getInstance().isLinked(mentionedUser.getIdLong())) {
 					msg.getChannel().sendMessage(EmbedHelper.getInstance()

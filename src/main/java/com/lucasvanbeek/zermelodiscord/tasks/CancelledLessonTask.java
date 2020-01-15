@@ -56,8 +56,8 @@ public class CancelledLessonTask extends TimerTask {
 				if (discordUser == null) {
 					break;
 				}
-				//Should be useless, getAppointmentParticipations sorts appointments by default
-				//Collections.sort(newCancelledLessons, new AppointmentComparator());
+				// Should be useless, getAppointmentParticipations sorts appointments by default
+				// Collections.sort(newCancelledLessons, new AppointmentComparator());
 
 				EmbedBuilder cancelledLessonEmbed = EmbedHelper.getInstance()
 						.createCancelledAlert(discordUser.getName() + "#" + discordUser.getDiscriminator());
@@ -65,7 +65,7 @@ public class CancelledLessonTask extends TimerTask {
 				for (Appointment app : newCancelledLessons) {
 					String startTime = (app.getStartTimeSlot() == null
 							? timeFormat.format(new Date(app.getStart() * 1000))
-							: "" + app.getStartTimeSlot());
+							: "" + app.getStartTimeSlot().replaceAll("[^\\d]", ""));
 
 					String teachers = app.getTeachers().isEmpty() ? ""
 							: "\nDocent: " + String.join(", ", app.getTeachers());
