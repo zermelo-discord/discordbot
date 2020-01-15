@@ -20,22 +20,25 @@ import net.dv8tion.jda.api.JDABuilder;
 
 public class Main {
 
-	private static String API_TOKEN = "";
+    private static String API_TOKEN = "";
     private static String IP_ADDRESS = "";
     private static int PORT = 3306;
     private static String DB_NAME = "";
     private static String USERNAME = "";
     private static String PASSWORD = "";
+    private static Main instance;
+    private JDA jda;
 
 	public static void main(String[] args) {
+		instance = new Main();
 		try {
-			JDA jda = new JDABuilder(API_TOKEN).build();
+			instance.setJDA(new JDABuilder(API_TOKEN).build());
 
 			HikariSQL.getInstance().setup(IP_ADDRESS, PORT, DB_NAME, USERNAME, PASSWORD);
-			EmbedHelper.getInstance().setJDA(jda);
+			EmbedHelper.getInstance().setJDA(instance.getJDA());
 
-			jda.addEventListener(new ReadyListener());
-			jda.addEventListener(new CommandListener());
+			instance.getJDA().addEventListener(new ReadyListener());
+			instance.getJDA().addEventListener(new CommandListener());
 
 			CommandFactory.getInstance().registerCommand("!link", new LinkCMD());
 			CommandFactory.getInstance().registerCommand("!unlink", new UnlinkCMD());
@@ -44,17 +47,29 @@ public class Main {
 			try {
 				// Wait for JDA to succesfully load. When JDA has been loaded start the
 				// cancelledlessontask
-				jda.awaitReady();
+				instance.getJDA().awaitReady();
 			} catch (Exception ex) {
 				// ignored
 			}
 			Timer timer = new Timer();
 
-			timer.scheduleAtFixedRate(new CancelledLessonTask(jda), 1000L, 1000 * 60 * 10);
-			timer.scheduleAtFixedRate(new AnnouncementTask(jda), 1000L, 1000 * 60 * 10);
+			timer.scheduleAtFixedRate(new CancelledLessonTask(instance.getJDA()), 1000L, 1000 * 60 * 10);
+			timer.scheduleAtFixedRate(new AnnouncementTask(instance.getJDA()), 1000L, 1000 * 60 * 10);
 		} catch (LoginException exception) {
 			System.out.println("[ERROR] An internal error has occured whilst attempting to login.");
 			exception.printStackTrace();
 		}
+	}
+	
+	public static Main getInstance() {
+		return instance;
+	}
+	
+	public JDA getJDA() {
+		return jda;
+	}
+	
+	private void setJDA(JDA jda) {
+		this.jda = jda;
 	}
 }

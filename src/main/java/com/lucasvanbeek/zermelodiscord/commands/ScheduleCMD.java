@@ -1,11 +1,13 @@
 package com.lucasvanbeek.zermelodiscord.commands;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.lucasvanbeek.zermelodiscord.Main;
 import com.lucasvanbeek.zermelodiscord.utils.EmbedHelper;
 import com.lucasvanbeek.zermelodiscord.utils.commands.BotCommand;
 import com.lucasvanbeek.zermelodiscord.utils.commands.Command;
@@ -14,8 +16,8 @@ import com.lucasvanbeek.zermelodiscord.utils.data.LinkedUser;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.ChannelType;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.User;
 import nl.mrwouter.zermelo4j.ZermeloAPI;
 import nl.mrwouter.zermelo4j.annoucements.Announcement;
 import nl.mrwouter.zermelo4j.appointments.Appointment;
@@ -39,18 +41,24 @@ public class ScheduleCMD implements BotCommand {
 		startCal.set(Calendar.MINUTE, 0);
 
 		boolean hasMention = false;
-		Member mentionedUser = null;
+		User mentionedUser = null;
 		if (args.length >= 1) {
 			int argIncrement = 0;
-			if (type != ChannelType.PRIVATE && msg.getMentionedMembers().size() == 1) {
-				mentionedUser = msg.getMentionedMembers().get(0);
-				if (!LinkData.getInstance().isLinked(mentionedUser.getIdLong())) {
+			List<Long> userIds = Arrays.asList(args).stream()
+					.filter(arg -> arg.contains("<@!") && arg.contains(">")
+							&& isInteger(arg.replace("<@!", "").replace(">", ""), 10))
+					.map(arg -> Long.valueOf(arg.replace("<@!", "").replace(">", ""))).collect(Collectors.toList());
+
+			if (userIds.size() == 1) {
+				mentionedUser = Main.getInstance().getJDA().getUserById(userIds.get(0));
+
+				if (mentionedUser == null || !LinkData.getInstance().isLinked(mentionedUser.getIdLong())) {
 					msg.getChannel().sendMessage(EmbedHelper.getInstance()
 							.createError("De gebruiker heeft zijn of haar Zermelo niet gekoppeld!")).queue();
 					return;
 				}
 				hasMention = true;
-				if (args.length > 2)
+				if (args.length > 1)
 					argIncrement = 1;
 			}
 			if (args[argIncrement].equalsIgnoreCase("morgen")) {
@@ -95,8 +103,8 @@ public class ScheduleCMD implements BotCommand {
 			scheduleEmbed = EmbedHelper.getInstance()
 					.createScheduleMessage(msg.getAuthor().getName() + "#" + msg.getAuthor().getDiscriminator());
 		} else {
-			scheduleEmbed = EmbedHelper.getInstance().createScheduleMessage(
-					mentionedUser.getUser().getName() + "#" + mentionedUser.getUser().getDiscriminator());
+			scheduleEmbed = EmbedHelper.getInstance()
+					.createScheduleMessage(mentionedUser.getName() + "#" + mentionedUser.getDiscriminator());
 		}
 
 		if (announcements.length() > 0) {
@@ -130,5 +138,22 @@ public class ScheduleCMD implements BotCommand {
 		}
 
 		msg.getChannel().sendMessage(scheduleEmbed.build()).queue();
+	}
+
+	public static boolean isInteger(String s, int radix) {
+		if (s.isEmpty())
+			return false;
+		for (int i = 0; i < s.length(); i++) {
+			if (i == 0 && s.charAt(i) == '-') {
+				if (s.length() == 1)
+					return false;
+				else
+					continue;
+			}
+			if (Character.digit(s.charAt(i), radix) < 0)
+				return false;
+		}
+
+		return true;
 	}
 }
