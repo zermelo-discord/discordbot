@@ -44,10 +44,7 @@ public class ScheduleCMD implements BotCommand {
 		User mentionedUser = null;
 		if (args.length >= 1) {
 			int argIncrement = 0;
-			List<Long> userIds = Arrays.asList(args).stream()
-					.filter(arg -> arg.contains("<@!") && arg.contains(">")
-							&& isInteger(arg.replace("<@!", "").replace(">", ""), 10))
-					.map(arg -> Long.valueOf(arg.replace("<@!", "").replace(">", ""))).collect(Collectors.toList());
+			List<Long> userIds = getUserIds(type, msg, args);
 
 			if (userIds.size() == 1) {
 				mentionedUser = Main.getInstance().getJDA().getUserById(userIds.get(0));
@@ -138,6 +135,16 @@ public class ScheduleCMD implements BotCommand {
 		}
 
 		msg.getChannel().sendMessage(scheduleEmbed.build()).queue();
+	}
+
+	public List<Long> getUserIds(ChannelType type, Message msg, String[] args) {
+		if (type == ChannelType.PRIVATE) {
+			return Arrays.asList(args).stream()
+					.filter(arg -> arg.contains("<@!") && arg.contains(">")
+							&& isInteger(arg.replace("<@!", "").replace(">", ""), 10))
+					.map(arg -> Long.valueOf(arg.replace("<@!", "").replace(">", ""))).collect(Collectors.toList());
+		}
+		return msg.getMentionedUsers().stream().map(User::getIdLong).collect(Collectors.toList());
 	}
 
 	public static boolean isInteger(String s, int radix) {

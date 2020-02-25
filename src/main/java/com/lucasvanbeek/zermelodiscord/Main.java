@@ -20,12 +20,13 @@ import net.dv8tion.jda.api.JDABuilder;
 
 public class Main {
 
-    private static String API_TOKEN = "";
+	private static String API_TOKEN = "";
     private static String IP_ADDRESS = "";
     private static int PORT = 3306;
     private static String DB_NAME = "";
     private static String USERNAME = "";
     private static String PASSWORD = "";
+    
     private static Main instance;
     private JDA jda;
 
