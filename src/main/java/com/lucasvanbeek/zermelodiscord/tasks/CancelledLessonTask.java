@@ -1,11 +1,7 @@
 package com.lucasvanbeek.zermelodiscord.tasks;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.TimerTask;
+import java.util.*;
 
 import com.lucasvanbeek.zermelodiscord.utils.DirectMessageConsumer;
 import com.lucasvanbeek.zermelodiscord.utils.EmbedHelper;
@@ -40,7 +36,7 @@ public class CancelledLessonTask extends TimerTask {
 			List<Long> knownCancelledLessons = CancelledData.getInstance().getKnownCancelledLessonIds(user.getUserId());
 			List<Appointment> newCancelledLessons = new ArrayList<>();
 
-			Calendar calendar = Calendar.getInstance();
+			Calendar calendar = Calendar.getInstance(Locale.GERMANY);
 
 			ZermeloAPI api = ZermeloAPI.getAPI(user.getSchool(), user.getAccessToken());
 			for (Appointment app : api.getAppointmentParticipations(calendar.get(Calendar.YEAR),

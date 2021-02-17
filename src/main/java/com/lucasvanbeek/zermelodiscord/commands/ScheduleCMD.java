@@ -1,10 +1,7 @@
 package com.lucasvanbeek.zermelodiscord.commands;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.lucasvanbeek.zermelodiscord.Main;
@@ -36,7 +33,7 @@ public class ScheduleCMD implements BotCommand {
 			return;
 		}
 
-		Calendar startCal = Calendar.getInstance();
+		Calendar startCal = Calendar.getInstance(Locale.GERMANY);
 		startCal.set(Calendar.HOUR_OF_DAY, 0);
 		startCal.set(Calendar.MINUTE, 0);
 
